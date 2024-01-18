@@ -1,0 +1,224 @@
+Profile :- 
+
+In Spring Boot, properties are key-value pairs that configure various aspects of the application. These properties can be specified in different ways, and they play a crucial role in customizing the behavior of your Spring Boot application.
+Here are some key types of properties in Spring Boot, with a focus on profiles:
+1. Application Properties:
+These are the primary properties used to configure your Spring Boot application. They are often defined in application.properties or application.yml files.
+
+
+spring.profiles.active=test
+Profiles allow you to define different sets of configurations for different environments. 
+Common profiles include development, test, and production. You can activate a profile using the spring.profiles.active property.
+
+
+Conditional Properties :-
+
+You can conditionally enable or disable components or configurations based on the presence or value of certain properties. For example:
+java
+@ConditionalOnProperty(name = "feature.enabled", havingValue = "true")
+public class MyFeatureService {
+    // Your feature service logic here
+}
+These are some of the common ways you can use properties in a Spring Boot application. 
+Profiles, in particular, are powerful for managing configurations across different environments. Understanding and leveraging these properties help make your Spring Boot applications flexible and easy to configure for various scenarios.
+
+
+Difference Between Form Data and x-www-form-urlencoded:-
+
+The terms "form data" and "x-www-form-urlencoded" are often used interchangeably, 
+but they refer to slightly different concepts in the context of HTTP requests.
+Form Data:
+Generic Term: "Form data" is a broad term that refers to any data submitted through an HTML form. 
+It can include various types of input, such as text fields, checkboxes, radio buttons, file uploads, etc.
+Format: Form data can be submitted in different formats, including application/x-www-form-urlencoded and multipart/form-data. 
+The format depends on the enctype attribute specified in the HTML form.
+
+x-www-form-urlencoded
+      :-
+Specific Content Type: application/x-www-form-urlencoded is a specific content type used to encode form data before it is sent in the body of an HTTP request.
+Encoding: In this encoding, the form data is represented as a series of key-value pairs separated by "&" characters. Each key and value are URL-encoded. For example, spaces may be represented as "%20," and special characters may be encoded accordingly.
+Usage: It is the default encoding type for HTML forms when the enctype attribute is not explicitly specified.
+In summary, "form data" is a broad term encompassing any data submitted through an HTML form,
+ while "x-www-form-urlencoded" specifically refers to a content type used to encode form data in a specific way for HTTP requests. 
+The application/x-www-form-urlencoded encoding is widely used for traditional HTML form submissions where data is sent as key-value pairs in the request body.
+
+
+Apache Kafka:-
+
+Apache Kafka is an open-source distributed event streaming platform that is widely used for building
+ real-time data pipelines and streaming applications. Originally developed by LinkedIn and later open-sourced as an
+ Apache Software Foundation project, Kafka provides a highly scalable, fault-tolerant, and durable messaging system.
+
+Key features of Apache Kafka include:-
+
+Distributed System:-- Kafka is designed as a distributed system, allowing it to scale horizontally across multiple servers or nodes. This enables high throughput and fault tolerance.
+Publish-Subscribe Model: Kafka follows a publish-subscribe messaging model. Producers publish messages to topics, and consumers subscribe to these topics to receive the messages.
+Event Streaming:-- Kafka is commonly used for event streaming, where events are continuously produced and consumed in real-time. It allows for the processing of data as it flows through the system.
+Durable and Fault-Tolerant:-- Kafka is designed to be highly durable and fault-tolerant. It persists messages on disk and allows for replication of data across multiple brokers to ensure data integrity and availability.
+Scalability: Kafka can scale horizontally by adding more broker nodes to the cluster. This makes it suitable for handling large volumes of data and accommodating growing workloads.
+Retention and Storage:-- Kafka retains messages for a configurable period, allowing consumers to catch up on missed messages. This makes it suitable for scenarios where historical data is important.
+Connectivity and Integration:-- Kafka provides connectors that allow easy integration with various data sources and sinks, enabling seamless data flow between different systems.
+Streaming API: Kafka Streams is a Java library for building stream processing applications. It allows developers to process and analyze data in real-time using a high-level API.
+Community and Ecosystem:-- Kafka has a vibrant open-source community and a growing ecosystem of tools and extensions that enhance its capabilities. This includes tools for monitoring, management, and integration with other technologies.
+Kafka is commonly used in scenarios such as log aggregation, real-time analytics, monitoring, and building event-driven architectures. 
+It has become a popular choice for organizations dealing with large-scale data processing and event-driven applications.
+
+Config Producer:--
+
+# Kafka bootstrap servers (comma-separated list)
+spring.kafka.bootstrap-servers=<kafka-bootstrap-servers>
+# Producer configurations
+spring.kafka.producer.key-serializer=<key-serializer-class>
+spring.kafka.producer.value-serializer=<value-serializer-class>
+# Additional producer configurations
+spring.kafka.producer.<property-name>=<property-value>
+# Example additional properties
+# spring.kafka.producer.acks=1
+# spring.kafka.producer.retries=3
+# spring.kafka.producer.batch-size=16384
+# spring.kafka.producer.linger-ms=1
+
+
+Consumer Config:--
+
+
+# Kafka bootstrap servers (comma-separated list)
+spring.kafka.bootstrap-servers=<kafka-bootstrap-servers>
+# Consumer group ID
+spring.kafka.consumer.group-id=<consumer-group-id>
+# Consumer configurations
+spring.kafka.consumer.key-deserializer=<key-deserializer-class>
+spring.kafka.consumer.value-deserializer=<value-deserializer-class>
+# Additional consumer configurations
+spring.kafka.consumer.<property-name>=<property-value>
+# Example additional properties
+# spring.kafka.consumer.auto-offset-reset=earliest
+# spring.kafka.consumer.enable-auto-commit=true
+# spring.kafka.consumer.max-poll-records=500
+# spring.kafka.consumer.fetch-min-size=1
+# spring.kafka.consumer.fetch-max-wait=500
+
+
+Feign Client:--
+
+Feign is a declarative web service client. It makes writing web service clients easier.
+ To use Feign create an interface and annotate it. It has pluggable annotation support including Feign annotations 
+and JAX-RS annotations. Feign also supports pluggable encoders and decoders. 
+Spring Cloud adds support for Spring MVC annotations and for using the same HttpMessageConverters used by default in Spring Web.
+ Spring Cloud integrates Eureka, Spring Cloud CircuitBreaker, as well as Spring Cloud LoadBalancer to provide a load-balanced http client when using Feign.
+
+Micro services resource naming conventions and best practices:--
+--------------------------------------------------------------
+
+Service Naming:--
+
+Use meaningful and descriptive names that reflect the service's functionality or purpose.
+Stick to lowercase letters and hyphens for service names (e.g., user-service, order-service).
+Avoid using underscores, uppercase letters, or special characters in service names.
+Endpoint Naming:
+Follow RESTful conventions for endpoint naming.
+==Use nouns to represent resources and keep the names plural (e.g., /users, /orders).
+==Use specific names for resource identifiers, and avoid generic terms (e.g., use /users/{userId} instead of /users/{id}).
+Versioning:
+==Include versioning information in the API endpoint to support backward compatibility (e.g., /v1/users, /v2/orders).
+==Choose a versioning strategy (e.g., path-based versioning, header-based versioning) and stick to it consistently.
+Consistent Resource Naming:
+==Keep resource names consistent across services to promote a unified and intuitive API.
+==Ensure that related resources have similar naming conventions (e.g., /users/{userId}/orders).
+Use Plural for Resource Collections:
+==Use plural nouns for resource collections to maintain consistency (e.g., /users, /orders).
+HTTP Methods:
+==Use appropriate HTTP methods for operations on resources (e.g., GET for retrieving, POST for creating, PUT for updating, DELETE for deleting).
+==Be consistent in the use of HTTP methods across services.
+Error Handling:
+==Use standard HTTP status codes for indicating the success or failure of an API request.
+==Provide clear and informative error messages in the response body.
+Avoid Verbosity:
+==Keep resource URIs concise and avoid unnecessary complexity.
+==Use sub-resources for related entities rather than embedding everything in a single resource.
+Use Hyphens for Readability:
+==Separate words in resource names with hyphens for improved readability (e.g., /customer-orders).
+Documentation:
+==Document your API thoroughly, including resource names, endpoint details, and payload structures.
+==Provide examples and usage guidelines to help developers understand how to interact with the API.
+Naming Conventions for Databases:
+==Align database table and column names with the corresponding microservices and API resources.
+==Follow database naming conventions (e.g., use snake_case for column names in SQL databases).
+Consistency Across Environments:
+==Maintain consistent naming conventions across development, testing, and production environments to avoid confusion.
+
+
+GIT Commands :--
+
+Initialize a Repository :-   git init
+Configure User Information:  git config --global user.name "Your Name"
+git config --global user.email your.email@example
+
+List Configurations:     git config –list
+Clone a Repository: git clone <repository_url>
+Check Repository Status:   git status
+Stage Changes:   git add <file(s)>
+Commit Changes:  git commit -m "Commit message"
+
+View Commit History:  git log
+
+
+Create a Branch: git branch <branch_name>
+
+
+Switch Branches: git checkout <branch_name>
+
+
+Create and Switch to a New Branch:   git checkout -b <new_branch_name>
+
+
+Merge Branches:  git merge <branch_name>
+
+
+Delete a Branch:  git branch -d <branch_name>
+
+
+Add a Remote Repository:  git remote add origin <repository_url>
+
+
+Conditional Bean Loading:---
+-------------------------------
+@Profile: The @Profile annotation allows you to specify that a bean should be registered only if a certain profile or set of profiles is active.
+
+@ConditionalOnProperty:--
+--
+  The @ConditionalOnProperty annotation allows you to conditionally register a bean based on the presence or value of a specific configuration property.
+@Configuration
+@ConditionalOnProperty(name = "myapp.feature.enabled", havingValue = "true")
+public class MyConfiguration {
+
+    @Bean
+    public MyBean conditionalBean() {
+        return new MyBean("Conditional Bean");
+    }
+
+    // Other beans...
+}
+
+
+
+Hashing:--
+---------------
+Purpose: Hashing is primarily used for data integrity verification, digital signatures, and password storage. It transforms input data into a fixed-size hash value, typically a string of characters.
+How it Works: Hashing is a one-way function, meaning it is designed to be irreversible. A small change in the input results in a substantially different hash value. Hash functions are deterministic, and the same input will always produce the same hash value.
+Examples: MD5, SHA-256, SHA-3, and bcrypt are examples of hashing algorithms.
+
+SOLID principles:--
+----------------------------
+
+The SOLID principles are a set of five design principles that aim to make software systems more maintainable, flexible, and scalable. These principles were introduced by Robert C. Martin and are widely used in object-oriented programming. The SOLID acronym represents the following principles:
+Single Responsibility Principle (SRP):
+A class should have only one reason to change, meaning that a class should have only one responsibility or job. This principle encourages a class to be focused on doing one thing well.
+Open/Closed Principle (OCP):
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This implies that you can add new functionality without altering existing code.
+Liskov Substitution Principle (LSP):
+Subtypes must be substitutable for their base types without altering the correctness of the program. In other words, objects of a superclass should be able to be replaced with objects of a subclass without affecting the program's functionality.
+Interface Segregation Principle (ISP):
+A class should not be forced to implement interfaces it does not use. This principle suggests that it is better to have multiple small, specific interfaces rather than a large, monolithic one, and classes should only be required to implement the interfaces that are relevant to them.
+Dependency Inversion Principle (DIP):
+High-level modules should not depend on low-level modules; both should depend on abstractions. Additionally, abstractions should not depend on details; details should depend on abstractions. This principle promotes the use of interfaces or abstract classes to define a level of indirection between high-level and low-level modules, making the system more flexible and easier to maintain.
