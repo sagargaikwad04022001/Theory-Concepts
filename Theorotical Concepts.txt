@@ -17,7 +17,7 @@ You can conditionally enable or disable components or configurations based on th
 java
 @ConditionalOnProperty(name = "feature.enabled", havingValue = "true")
 public class MyFeatureService {
-    // Your feature service logic here
+    // Your feature service logic here//
 }
 These are some of the common ways you can use properties in a Spring Boot application. 
 Profiles, in particular, are powerful for managing configurations across different environments. Understanding and leveraging these properties help make your Spring Boot applications flexible and easy to configure for various scenarios.
