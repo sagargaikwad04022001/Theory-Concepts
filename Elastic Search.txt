@@ -1,0 +1,390 @@
+For getting info about cluster and nodes syntax:--
+--------------------------------------------------
+     GET _API/parameter  
+For cluster info:-
+
+   Example  :- GET _cluster/health 
+
+For node info:--
+   Example :- GET _nodes/stats
+
+Create an index:--
+   PUT name-of-index
+   Example :- PUT favourite_candy 
+
+Create doc in index:--
+    If we use POST then id will be generated automatically and if we use PUT then we have to provide the id
+    POST favourite_candy/doc_
+    {
+       "name":"virat",
+       "city":"Bengaluru"
+    }
+
+    PUT favourite_candy/doc_/1 <-id of doc
+    {
+       "name":"rohit",
+       "city":"Mumbai"
+    }
+
+For reading doc:--
+    GET <index-name>/doc_/<id-of-doc>
+
+Creating doc with existing id:--
+    If we create doc with existing id then it will update the data of existing doc with new doc  in this case if we dont want 
+    update we want error then we use PUT favourite_candy/_create/1
+                                     {
+                                        "name":"rohit",
+                                        "city":"Mumbai"
+                                     }
+For Update:--
+
+    specific field update:-
+-   POST <index-name>/_update/<id-of-doc>
+    {
+       "doc":{
+                "city":"Barshi"
+             }
+    }
+
+For Delete:---
+   DELETE <index-name>/_doc/<id-of-doc>
+
+True Positive :--
+    Those documents which are applicable to return to user and search engine accepted them and returned to user successfully
+
+False Positive :-- Those docs whic are not revelant but still return to user by search engine
+
+True Negative :-- Those docs which are irrevelant and not returned to user
+
+False Negative :--Those docs which are revelant to return to user but rejected by search engine and not returned to user
+
+We need to calculate precision and recall for measuring relevance of search engine
+Precision:--
+-----------
+Precision tells us what portion of retrieved data is actually relevant to search query
+
+    Precision = True +ve / (True +ve + False +ve)
+
+Recall:--
+-----------
+Recall tells us what portion of relevant data is being returned as search results
+   
+   Recall = True +ve / (True +ve + False -ve)
+
+Precison and recall are inversely related
+  precison want all retrived results to be perfect whether it may be less or no doc also
+  Recall want to retrieve more data it dont care about match
+
+Precision and recall determine which docs are included in the search result but do not determine which of the returned
+documents are more relevant compared to other
+To get data from perticular range
+GET favourite_candy/_search
+{
+   "query":{
+     "range":{
+       "date":{
+          "gte":"2015-06-20",
+          "lte":"2015-09-22"
+              }
+             }
+           }
+}
+
+To track hits:--
+GET favourite_candy/_search
+{
+   "track_total_hits":true
+}
+
+For aggregation :--
+GET favourite_candy/_search
+{
+   "aggs":{
+      "by_category":{
+          "terms":{
+             "field":"category",
+             "size":100
+            }
+         }
+     }
+}
+
+Combination of query and aggregation:--
+GET favourite_candy/_search
+{
+   "query":{
+      "match":{ 
+               "category":"ENTERTAINMENT"
+              }
+           },
+   "aggregations":{
+       "popular_in_entertainment":{
+                  "significant_text":{  "field":"headline" }
+                                  }
+                  }
+}
+
+Match query:---
+------------------
+GET favourite_candy/_search
+{
+   "query":{
+      "match":{
+         "headline":{
+             "query":"khloe kardashian kendell"
+                    }
+              }
+           }
+}
+
+In above case the documents will come if the headline contain at least one word also so it increases the recall
+to avoid these and if we want every word to be there in the headline then we use the following query
+
+   GET favourite_candy/_search
+{
+   "query":{
+      "match":{
+         "headline":{
+             "query":"khloe kardashian kendell"
+             "operator":"and"
+                    }
+              }
+           }
+}
+
+If we want two terms from search to match the headline then we use the following query:---
+
+      GET favourite_candy/_search
+{
+   "query":{
+      "match":{
+         "headline":{
+             "query":"khloe kardashian kendell"
+             "minimum_should_match": 2
+                    }
+              }
+           }
+}                     
+
+Match phrase query:----
+-----------------------
+GET favourite_candy/_search
+{
+   "query":{
+      "match_phrase":{
+         "headline":{
+             "query":"python language"
+                    }
+              }
+           }
+}
+
+This match phrase query will look for the complete sentence not for words while match query looks for words
+
+Multi_match query in multiple fields:--
+------------------------------------------
+GET favourite_candy/_search
+{
+   "query":{
+      "multi_match":{
+            "query":"party planning",
+            "fields":[
+                  "headline",
+                  "short-description"
+                     ]
+                    }
+           }
+}
+
+Above query will search for words if we want if for phrases then use following query:---
+
+GET favourite_candy/_search
+{
+   "query":{
+   "multi_match":{
+          "query":"party planning",
+          "fields":[
+                "headline",
+                "short-description"
+                   ],
+           "type":"phrase"
+                 }
+            }
+}
+
+Bool Query:----
+GET favourite_candy/_search
+{
+   "query":{
+      "bool":{
+        "must":[
+                 {One or more queries can be specified here}
+               ],
+        "must_not":[
+                     {A doc must not match any of the queries}
+                   ],
+        "should":[
+                   {A doc should match these conditions(not mandatory thats why should)}
+                 ],
+        "filter":[
+                   {extra filters for seaarch results}
+                 ]
+               }
+             }
+}
+
+Combo of Query and Aggregation:--
+---------------------------------
+GET favourite_candy/_search
+{
+   "query":{
+      "match_phrase":{
+             "headline":"kenny jenner"
+                     }
+           },
+   "aggregation":{
+        "category_mentions":{
+               "terms":{
+                  "field":"category",
+                   "size":100
+                       }
+            }
+   }
+}
+
+Must and must_not combo:----
+--------------------------------
+GET favourite_candy/_search
+{  
+   "query":{
+      "bool":{
+         "must":{
+            "match_phrase": {
+                  "headline":"Barack obama"
+                            }
+                },
+         "must_not":{
+              "match":{
+             "category":"POLITICS"
+                      }
+                    }
+              }
+          }
+}
+
+must and filter combo:----
+----------------------------
+GET favourite_candy/_search
+{  
+   "query":{
+      "bool":{
+         "must":{
+            "match_phrase": {
+                  "headline":"Barack obama"
+                            }
+                },
+         "filter":{
+             "range":{
+                "date":{
+                         "gte":"2018-09-12",
+                         "lte":"2018-12-12"
+                       }
+                     }
+                  }
+             }
+           }
+}
+
+Query to find top 5 customers who has most no. of transactions:--(Terms Aggregation)
+--------------------------------------------------
+GET favourite_candy/_search
+{
+    "size":0,
+    "aggs":{
+         "top_5_customers":{
+                "terms":{
+                     "field":"customerId",
+                     "size":5
+                }
+             }
+         }
+}
+above query gives results in descending order
+for ascending order we have to use following query:--
+
+GET favourite_candy/_search
+{
+    "size":0,
+    "aggs":{
+         "top_5_customers":{
+                "terms":{
+                     "field":"customerId",
+                     "size":5,
+                     "order":{
+                         "_count":"asc"
+                   }
+                }
+             }
+         }
+}
+
+by default terms aggregation sorts based on doc_count value
+         
+              
+
+                
+
+Ranking determines which of the returned documents are more relevant compared to other
+It gives result in order of most relevant to less relevant here most relevant is the highest scored doc and less relevant
+is less scored doc 
+
+Score :- It is the value given to docs by using  TF-IDF (Term Frequency-Inverse Document Frequency) algorithm 
+
+
+
+
+
+
+Elastic search is search and analytic engine not a database 
+Nodes uses cache while searching for data
+
+The Elastic Stack, also known as the ELK Stack, is a powerful collection of open-source tools for searching, analyzing, and visualizing data in real-time. The Elastic Stack is comprised of several components, and here's an overview of the architecture and how data flows through it:
+
+Data Ingestion:
+
+Beats: Lightweight data shippers that collect and ship various types of operational data. Beats are agents installed on servers or systems where data needs to be collected. Different types of Beats (e.g., Filebeat, Metricbeat) are designed for specific use cases.
+
+Logstash: An optional component that can be used for additional processing and enrichment of data. Logstash can receive data from Beats or other sources, perform transformations, and then send it to Elasticsearch.
+
+Data Storage and Indexing:
+
+Elasticsearch: A distributed, scalable search and analytics engine. Elasticsearch stores and indexes the ingested data, making it searchable and providing fast and efficient retrieval. It uses a distributed architecture with nodes forming a cluster to ensure scalability and fault tolerance.
+Data Visualization and Exploration:
+
+Kibana: A web-based user interface for visualizing and exploring data stored in Elasticsearch. Kibana allows users to create dashboards, visualizations, and perform ad-hoc queries to gain insights into the data.
+Now, let's break down the data flow:
+
+Beats Data Flow:
+
+Data Collection: Beats are deployed on servers or systems to collect different types of data (logs, metrics, etc.).
+
+Ship to Elasticsearch or Logstash: Beats can directly ship data to Elasticsearch, or optionally, they can send data to Logstash for additional processing and enrichment. The destination is configurable.
+
+Logstash Data Flow (Optional):
+
+Input: Logstash can receive data from multiple sources, including Beats, syslog, TCP/UDP, etc.
+
+Filter: Logstash can apply filters to parse, transform, and enrich the data. Filters are optional and depend on specific use cases.
+
+Output: The processed data is sent to the desired output destination, which can be Elasticsearch for indexing.
+
+Elasticsearch Data Flow:
+
+Indexing: In Elasticsearch, data is indexed, and indices are created based on the specified mappings. The data is stored in shards, and the indices are distributed across the nodes in the Elasticsearch cluster.
+
+Searching and Retrieval: Elasticsearch provides a powerful search and retrieval mechanism, allowing users to query the data in real-time.
+
+Kibana Data Exploration:
+
+Kibana connects to Elasticsearch to retrieve and visualize the indexed data. Users can create dashboards, visualizations, and explore the data interactively.
+In summary, the Elastic Stack follows a pipeline approach where Beats collect data, Logstash (optional) processes and enriches it, Elasticsearch stores and indexes it, and Kibana provides a user interface for data exploration and visualization. The stack is designed to be scalable, distributed, and flexible, making it suitable for various use cases such as log management, monitoring, and data analytics.
